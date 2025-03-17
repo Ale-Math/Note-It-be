@@ -39,3 +39,4 @@ router.get("/todo", (req: Request, res: Response) => {
         message: "get all todos endpoint"
     })
 });
+
