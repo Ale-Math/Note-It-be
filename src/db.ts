@@ -1,6 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-require('dotenv').config();
-mongoose.connect(process.env.DATABASE_URL as string);
 
 const userSchema = new Schema({
     name: String,
