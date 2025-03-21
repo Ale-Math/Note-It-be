@@ -4,7 +4,8 @@ import 'dotenv/config';
 import mongoose from "mongoose";
 const app = express();
 
-mongoose.connect(process.env.DATABASE_URL as string);
+// Remove Non-null assertion operator!
+mongoose.connect(process.env.DATABASE_URL!);
 
 app.use("/api/v1", router);
 
