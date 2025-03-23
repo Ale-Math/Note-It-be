@@ -11,7 +11,6 @@ export function middleware(req:Request, res: Response, next: NextFunction) {
         req.userId = decoded.userId;
         next();
     } else {
-
         res.status(403).json({
             message: "User not authorised!"
         })

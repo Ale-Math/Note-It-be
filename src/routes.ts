@@ -1,17 +1,34 @@
 import express, { Request, Response } from "express";
 import cors from "cors"
 import 'dotenv/config';
+import { zodSignupSchema } from "./types/types";
+import { User } from "./db";
+import bycrpt from "bcrypt";
 
 export const router = express.Router();
 router.use(express.json());
 router.use(cors());
 
-router.post("/signup", (req: Request, res: Response) => {
+router.post("/signup", async (req: Request, res: Response) => {
 
-    const data = req.body;
-    res.json({
-        message: "signup endpoint"
-    })
+    try {
+    const data = zodSignupSchema.parse(req.body);
+    const hashedPassword = bycrpt.hashSync(data.password, 2);
+    await User.create({
+        name: data.name,
+        email: data.email,
+        password: hashedPassword
+    });
+res.json({
+    message: "Signed up successfully"
+})
+    } catch(e){ 
+        
+        res.json({
+        message: "Enter the correct details"
+        })
+        return;
+    }
 });
 
 router.post("/signin", (req: Request, res: Response) => {
