@@ -10,7 +10,7 @@ export const User = mongoose.model('user', userSchema);
 
 const todoSchema = new Schema({
     todo: String,
-    done: Boolean,
+    done: {type: Boolean, default: false},
     user: {type: mongoose.Types.ObjectId, ref: User}
 });
 
