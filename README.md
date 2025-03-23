@@ -4,4 +4,4 @@
     - Stack used: MERN (MongoDB, Express, React, Node.js) with following additions:
     - Zod schema for type checking.
     - bycrpt for password hashing.
-    - passport for auth.
+    - jwt for auth.

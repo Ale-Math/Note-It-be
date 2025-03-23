@@ -7,6 +7,8 @@ router.use(express.json());
 router.use(cors());
 
 router.post("/signup", (req: Request, res: Response) => {
+
+    const data = req.body;
     res.json({
         message: "signup endpoint"
     })
