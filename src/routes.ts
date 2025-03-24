@@ -1,9 +1,11 @@
 import express, { Request, Response } from "express";
 import cors from "cors"
 import 'dotenv/config';
-import { zodSignupSchema } from "./types/types";
+import { zodSigninSchema, zodSignupSchema } from "./types/types";
 import { User } from "./db";
 import bycrpt from "bcrypt";
+import { middleware } from "./authentication";
+import jwt from "jsonwebtoken"
 
 export const router = express.Router();
 router.use(express.json());
@@ -31,13 +33,32 @@ res.json({
     }
 });
 
-router.post("/signin", (req: Request, res: Response) => {
-    res.json({
-        message: "signin endpoint"
-    })
+router.post("/signin", async (req: Request, res: Response) => {
+    try {
+    const data = zodSigninSchema.parse(req.body);
+            const foundUser = await User.find({
+                email: data.email
+            });
+            
+            const token = jwt.sign(data.email, process.env.JWT_SECRET!)
+
+        res.json({
+            message: token
+        })
+
+            
+
+    } catch(e) {
+        res.json({
+            message: "Enter the correct details"
+        })
+    }
+
+
+
 });
 
-router.post("/todo", (req: Request, res: Response) => {
+router.post("/todo", middleware, (req: Request, res: Response) => {
     res.json({
         message: "create todo endpoint"
     })
