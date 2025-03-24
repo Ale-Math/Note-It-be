@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors"
 import 'dotenv/config';
-import { zodSigninSchema, zodSignupSchema } from "./types/types";
+import { zodSigninSchema, zodSignupSchema, zodTodoSchema } from "./types/types";
 import { User } from "./db";
 import bycrpt from "bcrypt";
 import { middleware } from "./authentication";
@@ -58,10 +58,19 @@ router.post("/signin", async (req: Request, res: Response) => {
 
 });
 
-router.post("/todo", middleware, (req: Request, res: Response) => {
+router.post("/todo", middleware, async (req: Request, res: Response) => {
+
+    try{
+        const data = zodTodoSchema.parse(req.body);
+        const foundUser = await User.find({
+            email: req.email
+        })
+        const userId = foundUser?._id;
+    } catch(e) {
     res.json({
-        message: "create todo endpoint"
+        message: "User not authorised."
     })
+}
 });
 
 router.delete("/todo", (req: Request, res: Response) => {
