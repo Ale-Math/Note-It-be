@@ -8,7 +8,7 @@ export function middleware(req:Request, res: Response, next: NextFunction) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
     if (decoded) {
-        req.email = decoded.email;
+        req.email = decoded;
         next();
     } else {
         res.status(403).json({
