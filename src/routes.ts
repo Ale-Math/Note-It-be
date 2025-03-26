@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors"
 import 'dotenv/config';
 import { zodSigninSchema, zodSignupSchema, zodTodoSchema } from "./types/types";
-import { User } from "./db";
+import { Todo, User } from "./db";
 import bycrpt from "bcrypt";
 import { middleware } from "./authentication";
 import jwt from "jsonwebtoken"
@@ -65,8 +65,17 @@ router.post("/todo", middleware, async (req: Request, res: Response) => {
         const foundUser = await User.find({
             email: req.email
         })
-        const userId = foundUser?._id;
+
+        await Todo.create({
+            todo: data.todo,
+            user: foundUser[0]._id
+        })
+
+        res.json({
+            message: "Todo created"
+        })
     } catch(e) {
+        console.log(e);
     res.json({
         message: "User not authorised."
     })

@@ -21,5 +21,5 @@ export const zodSigninSchema = z.object({
 
 export const zodTodoSchema = z.object({
     todo: z.string(),
-    done: z.boolean()
+    done: z.boolean().optional()
 })

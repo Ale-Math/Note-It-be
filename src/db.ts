@@ -11,7 +11,7 @@ export const User = mongoose.model('user', userSchema);
 const todoSchema = new Schema({
     todo: String,
     done: {type: Boolean, default: false},
-    user: {type: mongoose.Types.ObjectId, ref: User}
+    user: {type: Schema.Types.ObjectId, ref: "user"}
 });
 
 export const Todo = mongoose.model('todos', todoSchema);
