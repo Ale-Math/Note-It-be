@@ -115,12 +115,7 @@ router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) 
             email: req.email
         })
 
-        const todoId = await Todo.findOne({
-            todo: todo,
-            user: foundUser[0]._id
-        })
-
-        
+       
         await Todo.findOneAndUpdate({
             todo: todo,
             user: foundUser[0]._id
@@ -142,6 +137,33 @@ router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) 
     }
 });
 
+router.put("/tododone/:todo", middleware, async (req: Request, res: Response) => {
+    const { todo } = req.params;
+    try {
+        const foundUser = await User.find({
+            email: req.email
+        })
+        
+        await Todo.findOneAndUpdate({
+            todo: todo,
+            user: foundUser[0]._id
+        },
+    {
+        $set: {done: true}
+    })
+
+        res.json({
+            message: "Todo updated!"
+        })
+    
+    } catch(e) {
+    
+        console.log(e);
+        res.json({
+            message: "There was an error while updating the todo!"
+        })
+    }
+});
 
 router.get("/todo", (req: Request, res: Response) => {
     res.json({
