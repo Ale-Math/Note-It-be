@@ -6,17 +6,17 @@ import { Todo, User } from "./db";
 import bycrpt from "bcrypt";
 import { middleware } from "./authentication";
 import jwt from "jsonwebtoken"
-import { todo } from "node:test";
 
 export const router = express.Router();
 router.use(express.json());
 router.use(cors());
+const SALT_ROUNDS = 2;
 
 router.post("/signup", async (req: Request, res: Response) => {
 
     try {
     const data = zodSignupSchema.parse(req.body);
-    const hashedPassword = bycrpt.hashSync(data.password, 2);
+    const hashedPassword = bycrpt.hashSync(data.password, SALT_ROUNDS);
     await User.create({
         name: data.name,
         email: data.email,
@@ -30,33 +30,37 @@ res.json({
         res.json({
         message: "Enter the correct details"
         })
-        return;
     }
 });
 
 router.post("/signin", async (req: Request, res: Response) => {
     try {
     const data = zodSigninSchema.parse(req.body);
+            
             const foundUser = await User.find({
-                email: data.email
+                email: data.email,
             });
+            const comparePasswords = bycrpt.compareSync(data.password, foundUser[0].password!)
+            if (comparePasswords) {
             
             const token = jwt.sign(data.email, process.env.JWT_SECRET!)
 
         res.json({
             message: token
         })
-
-            
+    } else {
+        res.json({
+            message: "Enter the correct password!"
+        })
+    } 
+                
 
     } catch(e) {
+        console.log(e)
         res.json({
             message: "Enter the correct details"
         })
     }
-
-
-
 });
 
 router.post("/todo", middleware, async (req: Request, res: Response) => {
@@ -165,9 +169,24 @@ router.put("/tododone/:todo", middleware, async (req: Request, res: Response) =>
     }
 });
 
-router.get("/todo", (req: Request, res: Response) => {
-    res.json({
-        message: "get all todos endpoint"
+router.get("/todos", middleware, async (req: Request, res: Response) => {
+
+    try {
+    const foundUser = await User.find({
+        email: req.email
     })
+
+    const allTodos = await Todo.find({
+        user: foundUser[0]._id
+    })
+
+    res.json({
+        message: allTodos
+    })
+} catch(e) {
+    res.json({
+        message: "Error while retrieving todos"
+    })
+}
 });
 
