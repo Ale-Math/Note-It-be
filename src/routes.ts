@@ -84,19 +84,15 @@ router.post("/todo", middleware, async (req: Request, res: Response) => {
 });
 
 router.delete("/todo/:todo", middleware, async (req: Request, res: Response) => {
-    const {todo} = req.params;
+    const { todo } = req.params;
     try {
     const foundUser = await User.find({
         email: req.email
     })
-    const foundTodo = await Todo.deleteOne({
+    await Todo.deleteOne({
         todo: todo,
         user: foundUser[0]._id
     })
-
-    // await Todo.deleteOne({
-    //     _id: foundTodo[0]._id
-    // })
 
     res.json({
         message: "Todo deleted!"
@@ -111,11 +107,41 @@ router.delete("/todo/:todo", middleware, async (req: Request, res: Response) => 
 }
 });
 
-router.put("/todo", (req: Request, res: Response) => {
-    res.json({
-        message: "edit todo endpoint"
+router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) => {
+    const newTodo = req.body.todo;
+    const { todo } = req.params;
+    try {
+        const foundUser = await User.find({
+            email: req.email
+        })
+
+        const todoId = await Todo.findOne({
+            todo: todo,
+            user: foundUser[0]._id
+        })
+
+        
+        await Todo.findOneAndUpdate({
+            todo: todo,
+            user: foundUser[0]._id
+        },
+    {
+        $set: {todo: newTodo}
     })
+
+        res.json({
+            message: "Todo updated!"
+        })
+    
+    } catch(e) {
+    
+        console.log(e);
+        res.json({
+            message: "There was an error while updating the todo!"
+        })
+    }
 });
+
 
 router.get("/todo", (req: Request, res: Response) => {
     res.json({
