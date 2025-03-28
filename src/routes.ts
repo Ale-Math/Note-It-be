@@ -6,6 +6,7 @@ import { Todo, User } from "./db";
 import bycrpt from "bcrypt";
 import { middleware } from "./authentication";
 import jwt from "jsonwebtoken"
+import { todo } from "node:test";
 
 export const router = express.Router();
 router.use(express.json());
@@ -82,10 +83,32 @@ router.post("/todo", middleware, async (req: Request, res: Response) => {
 }
 });
 
-router.delete("/todo", (req: Request, res: Response) => {
-    res.json({
-        message: "delete todo endpoint"
+router.delete("/todo/:todo", middleware, async (req: Request, res: Response) => {
+    const {todo} = req.params;
+    try {
+    const foundUser = await User.find({
+        email: req.email
     })
+    const foundTodo = await Todo.deleteOne({
+        todo: todo,
+        user: foundUser[0]._id
+    })
+
+    // await Todo.deleteOne({
+    //     _id: foundTodo[0]._id
+    // })
+
+    res.json({
+        message: "Todo deleted!"
+    })
+
+} catch(e) {
+
+    console.log(e);
+    res.json({
+        message: "There was an error while deleting the todo!"
+    })
+}
 });
 
 router.put("/todo", (req: Request, res: Response) => {
