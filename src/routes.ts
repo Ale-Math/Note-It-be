@@ -49,7 +49,7 @@ router.post("/signin", async (req: Request, res: Response) => {
             message: token
         })
     } else {
-        res.json({
+        res.status(403).json({
             message: "Enter the correct password!"
         })
     } 
@@ -57,7 +57,7 @@ router.post("/signin", async (req: Request, res: Response) => {
 
     } catch(e) {
         console.log(e)
-        res.json({
+        res.status(403).json({
             message: "Enter the correct details"
         })
     }
@@ -81,7 +81,7 @@ router.post("/todo", middleware, async (req: Request, res: Response) => {
         })
     } catch(e) {
         console.log(e);
-    res.json({
+    res.status(403).json({
         message: "User not authorised."
     })
 }
@@ -184,7 +184,7 @@ router.get("/todos", middleware, async (req: Request, res: Response) => {
         message: allTodos
     })
 } catch(e) {
-    res.json({
+    res.status(403).json({
         message: "Error while retrieving todos"
     })
 }
