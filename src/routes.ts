@@ -47,9 +47,10 @@ router.post("/signin", async (req: Request, res: Response) => {
             if (comparePasswords) {
             
             const token = jwt.sign(data.email, process.env.JWT_SECRET!)
+            console.log(token)
 
         res.json({
-            message: token
+            token
         })
     } else {
         res.status(403).json({
