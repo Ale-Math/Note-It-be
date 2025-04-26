@@ -22,11 +22,14 @@ router.post("/signup", async (req: Request, res: Response) => {
         email: data.email,
         password: hashedPassword
     });
+
+    const token = jwt.sign(data.email, process.env.JWT_SECRET!)
+
 res.json({
-    message: "Signed up successfully"
+    message: token
 })
     } catch(e){ 
-        
+        console.log(e);
         res.json({
         message: "Enter the correct details"
         })
