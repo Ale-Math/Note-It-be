@@ -10,6 +10,7 @@ export const User = mongoose.model('user', userSchema);
 
 const todoSchema = new Schema({
     todo: String,
+    description: String,
     done: {type: Boolean, default: false},
     user: {type: Schema.Types.ObjectId, ref: "user"}
 });

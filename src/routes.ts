@@ -76,6 +76,7 @@ router.post("/todo", middleware, async (req: Request, res: Response) => {
 
         await Todo.create({
             todo: data.todo,
+            description: data.description,
             user: foundUser[0]._id
         })
 
@@ -116,7 +117,10 @@ router.delete("/todo/:todo", middleware, async (req: Request, res: Response) => 
 
 router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) => {
     const newTodo = req.body.todo;
-    const { todo } = req.params;
+    const todo  = req.params["todo"];
+    const description = req.params["description"];
+    const newDescription = req.body.description;
+
     try {
         const foundUser = await User.find({
             email: req.email
@@ -128,7 +132,7 @@ router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) 
             user: foundUser[0]._id
         },
     {
-        $set: {todo: newTodo}
+        $set: {todo: newTodo, description: newDescription}
     })
 
         res.json({
