@@ -91,6 +91,24 @@ router.post("/todo", middleware, async (req: Request, res: Response) => {
 }
 });
 
+router.get("/userdetails", middleware, async (req: Request, res: Response) => {
+
+    try{
+        const data = await User.find({
+            email: req.email
+        })
+
+        res.json({
+            data
+        })
+    } catch(e) {
+        console.log(e);
+    res.status(403).json({
+        message: "User not found."
+    })
+}
+});
+
 router.delete("/todo/:todo", middleware, async (req: Request, res: Response) => {
     const { todo } = req.params;
     try {
