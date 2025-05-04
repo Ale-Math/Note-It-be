@@ -16,6 +16,17 @@ router.post("/signup", async (req: Request, res: Response) => {
 
     try {
     const data = zodSignupSchema.parse(req.body);
+
+    const checkUser = await User.findOne({
+        email: data.email
+    })
+
+    if (checkUser) {
+        res.json({
+            message: "User already exists."
+        })
+    } else {
+
     const hashedPassword = bycrpt.hashSync(data.password, SALT_ROUNDS);
     await User.create({
         name: data.name,
@@ -26,14 +37,15 @@ router.post("/signup", async (req: Request, res: Response) => {
     const token = jwt.sign(data.email, process.env.JWT_SECRET!)
 
 res.json({
-    message: token
+    token
 })
-    } catch(e){ 
+    }} catch(e){ 
         console.log(e);
         res.json({
         message: "Enter the correct details"
         })
     }
+
 });
 
 router.post("/signin", async (req: Request, res: Response) => {
