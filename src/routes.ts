@@ -218,7 +218,7 @@ router.get("/todos", middleware, async (req: Request, res: Response) => {
     })
 
     res.json({
-        message: allTodos
+        allTodos
     })
 } catch(e) {
     res.status(403).json({
