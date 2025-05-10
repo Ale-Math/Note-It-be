@@ -147,9 +147,9 @@ router.delete("/todo/:todo", middleware, async (req: Request, res: Response) => 
 
 router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) => {
     const newTodo = req.body.todo;
-    const todo  = req.params["todo"];
-    const description = req.params["description"];
     const newDescription = req.body.description;
+
+    const todo  = req.params["todo"];
 
     try {
         const foundUser = await User.find({
