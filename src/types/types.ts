@@ -8,7 +8,7 @@ export const zodSignupSchema = z.object({
                 .email({message: "Invalid email address."}),
     password: z.string()
                 .max(32, {message: "Password must not be more than 32 characters."})
-                .min(3, {message: "Password must be 3 or more characters long."})
+                .min(8, {message: "Password must be 8 or more characters long."})
 })
 
 export const zodSigninSchema = z.object({
@@ -16,7 +16,7 @@ export const zodSigninSchema = z.object({
                 .email({message: "Invalid email address."}),
     password: z.string()
                 .max(32, {message: "Password must not be more than 32 characters."})
-                .min(3, {message: "Password must be 3 or more characters long."})
+                .min(8, {message: "Password must be 8 or more characters long."})
 })
 
 export const zodTodoSchema = z.object({

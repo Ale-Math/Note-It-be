@@ -180,6 +180,7 @@ router.put("/updatetodo/:todo", middleware, async (req: Request, res: Response) 
 
 router.put("/tododone/:todo", middleware, async (req: Request, res: Response) => {
     const { todo } = req.params;
+    const done = req.body.done;
     try {
         const foundUser = await User.find({
             email: req.email
@@ -190,7 +191,7 @@ router.put("/tododone/:todo", middleware, async (req: Request, res: Response) =>
             user: foundUser[0]._id
         },
     {
-        $set: {done: true}
+        $set: {done: done}
     })
 
         res.json({
