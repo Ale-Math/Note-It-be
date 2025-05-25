@@ -215,7 +215,8 @@ router.get("/todos", middleware, async (req: Request, res: Response) => {
     })
 
     const allTodos = await Todo.find({
-        user: foundUser[0]._id
+        user: foundUser[0]._id,
+        done: false
     })
 
     res.json({
