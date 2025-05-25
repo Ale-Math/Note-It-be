@@ -207,7 +207,7 @@ router.put("/tododone/:todo", middleware, async (req: Request, res: Response) =>
     }
 });
 
-router.get("/todos", middleware, async (req: Request, res: Response) => {
+router.get("/notdonetodos", middleware, async (req: Request, res: Response) => {
 
     try {
     const foundUser = await User.find({
@@ -217,6 +217,28 @@ router.get("/todos", middleware, async (req: Request, res: Response) => {
     const allTodos = await Todo.find({
         user: foundUser[0]._id,
         done: false
+    })
+
+    res.json({
+        allTodos
+    })
+} catch(e) {
+    res.status(403).json({
+        message: "Error while retrieving todos"
+    })
+}
+});
+
+router.get("/donetodos", middleware, async (req: Request, res: Response) => {
+
+    try {
+    const foundUser = await User.find({
+        email: req.email
+    })
+
+    const allTodos = await Todo.find({
+        user: foundUser[0]._id,
+        done: true
     })
 
     res.json({
