@@ -256,6 +256,17 @@ router.post("/newproject", middleware, async (req: Request, res: Response) => {
         const projectName = req.body.project;
         const sharedUser = req.body.sharedemail;
 
+        try {
+            const sharedFoundUser = await User.find({
+            email: sharedUser
+        })
+        } catch(e) {
+
+            res.json({
+                message: "User does not exist!"
+            })
+        }
+
         const foundUser = await User.find({
             email: req.email
         })
