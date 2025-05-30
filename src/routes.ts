@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors"
 import 'dotenv/config';
 import { zodSigninSchema, zodSignupSchema, zodTodoSchema } from "./types/types";
-import { Todo, User } from "./db";
+import { Project, Todo, User } from "./db";
 import bycrpt from "bcrypt";
 import { middleware } from "./authentication";
 import jwt from "jsonwebtoken"
@@ -250,4 +250,25 @@ router.get("/donetodos", middleware, async (req: Request, res: Response) => {
     })
 }
 });
+
+router.post("/newproject", middleware, async (req: Request, res: Response) => {
+
+        const projectName = req.body.project;
+        const sharedUser = req.body.sharedemail;
+
+        const foundUser = await User.find({
+            email: req.email
+        })
+
+        await Project.create({
+            project: projectName,
+            sharedUser,
+            user: foundUser[0]._id
+
+        })
+
+        res.json({
+            message: "Project created!"
+        })
+})
 

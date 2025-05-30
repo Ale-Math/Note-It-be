@@ -17,3 +17,22 @@ const todoSchema = new Schema({
 
 export const Todo = mongoose.model('todos', todoSchema);
 
+const sharedTodoSchema = new Schema({
+    todo: String,
+    description: String,
+    done: {type: Boolean, default: false},
+    user: {type: Schema.Types.ObjectId, ref: "user"},
+    sharedUser: {type: Schema.Types.ObjectId, ref: "project"}
+});
+
+export const SharedTodo = mongoose.model('sharedtodos', sharedTodoSchema);
+
+const sharedProjectSchema = new Schema({
+    project: String,
+    sharedUser: String,
+    user: {type: Schema.Types.ObjectId, ref: "user"},
+
+})
+
+export const Project = mongoose.model('projects', sharedProjectSchema)
+
