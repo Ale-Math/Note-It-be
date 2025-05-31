@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import { zodSigninSchema, zodSignupSchema, zodTodoSchema } from "./types/types";
-import { Project, Todo, User } from "./db";
+import { Project, SharedTodo, Todo, User } from "./db";
 import bycrpt from "bcrypt";
 import { middleware } from "./authentication";
 import jwt from "jsonwebtoken";
@@ -294,5 +294,29 @@ router.post("/newproject", middleware, async (req: Request, res: Response) => {
     }
   } catch (e) {
     console.log(e);
+  }
+});
+
+router.post("/sharedtodo", middleware, async (req: Request, res: Response) => {
+  try {
+    const data = zodTodoSchema.parse(req.body);
+    const foundUser = await User.find({
+      email: req.email,
+    });
+
+    await SharedTodo.create({
+      todo: data.todo,
+      description: data.description,
+      user: foundUser[0]._id,
+    });
+
+    res.json({
+      message: "Todo created",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(403).json({
+      message: "User not authorised.",
+    });
   }
 });
