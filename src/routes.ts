@@ -263,7 +263,7 @@ router.post("/newproject", middleware, async (req: Request, res: Response) => {
       email: sharedUser,
     });
 
-    if (sharedFoundUser) {
+    if (sharedFoundUser[0]) {
       const foundUser = await User.find({
         email: req.email,
       });
