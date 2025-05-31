@@ -268,15 +268,25 @@ router.post("/newproject", middleware, async (req: Request, res: Response) => {
         email: req.email,
       });
 
-      await Project.create({
+      const checkProject = await Project.findOne({
         project: projectName,
-        sharedUser,
-        user: foundUser[0]._id,
       });
 
-      res.json({
-        message: "Project created!",
-      });
+      if (!checkProject) {
+        await Project.create({
+          project: projectName,
+          sharedUser,
+          user: foundUser[0]._id,
+        });
+
+        res.json({
+          message: "Project created!",
+        });
+      } else {
+        res.json({
+          message: "Project name already exists!",
+        });
+      }
     } else {
       res.json({
         message: "User does not exist!",
