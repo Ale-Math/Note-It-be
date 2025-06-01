@@ -297,26 +297,42 @@ router.post("/newproject", middleware, async (req: Request, res: Response) => {
   }
 });
 
-router.post("/sharedtodo", middleware, async (req: Request, res: Response) => {
-  try {
-    const data = zodTodoSchema.parse(req.body);
-    const foundUser = await User.find({
-      email: req.email,
-    });
+router.post(
+  "/sharedtodo/:project",
+  middleware,
+  async (req: Request, res: Response) => {
+    const { project } = req.params;
 
-    await SharedTodo.create({
-      todo: data.todo,
-      description: data.description,
-      user: foundUser[0]._id,
-    });
+    try {
+      const data = zodTodoSchema.parse(req.body);
+      const foundUser = await User.find({
+        email: req.email,
+      });
 
-    res.json({
-      message: "Todo created",
-    });
-  } catch (e) {
-    console.log(e);
-    res.status(403).json({
-      message: "User not authorised.",
-    });
+      const projectData = await Project.find({
+        project,
+        user: foundUser[0]._id,
+      });
+
+      const sharedUserData = await User.find({
+        email: projectData[0].sharedUser,
+      });
+
+      await SharedTodo.create({
+        todo: data.todo,
+        description: data.description,
+        user: foundUser[0]._id,
+        sharedUser: sharedUserData[0]._id,
+      });
+
+      res.json({
+        message: "Todo created",
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(403).json({
+        message: "User not authorised.",
+      });
+    }
   }
-});
+);
