@@ -367,3 +367,42 @@ router.get(
     }
   }
 );
+
+router.delete(
+  "/sharedtodo/:project/:todo",
+  middleware,
+  async (req: Request, res: Response) => {
+    const { project } = req.params;
+    const { todo } = req.params;
+    try {
+      const foundUser = await User.find({
+        email: req.email,
+      });
+
+      const projectData = await Project.find({
+        project,
+        user: foundUser[0]._id,
+      });
+
+      const sharedUserData = await User.find({
+        email: projectData[0].sharedUser,
+      });
+
+      await SharedTodo.deleteOne({
+        todo: todo,
+        user: foundUser[0]._id,
+        sharedUser: sharedUserData[0]._id,
+        project: projectData[0]._id,
+      });
+
+      res.json({
+        message: "Todo deleted!",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        message: "There was an error while deleting the todo!",
+      });
+    }
+  }
+);
