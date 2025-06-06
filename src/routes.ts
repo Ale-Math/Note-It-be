@@ -406,3 +406,51 @@ router.delete(
     }
   }
 );
+
+router.put(
+  "/updatesharedtodo/:project/:todo",
+  middleware,
+  async (req: Request, res: Response) => {
+    const newTodo = req.body.todo;
+    const newDescription = req.body.description;
+
+    const project = req.params["project"];
+    const todo = req.params["todo"];
+
+    try {
+      const foundUser = await User.find({
+        email: req.email,
+      });
+
+      const projectData = await Project.find({
+        project,
+        user: foundUser[0]._id,
+      });
+
+      const sharedUserData = await User.find({
+        email: projectData[0].sharedUser,
+      });
+
+      await SharedTodo.findOneAndUpdate(
+        {
+          todo: todo,
+          user: foundUser[0]._id,
+          sharedUser: sharedUserData[0]._id,
+          project: projectData[0]._id,
+        },
+        {
+          $set: { todo: newTodo, description: newDescription },
+        }
+      );
+
+      res.json({
+        message: "Todo updated!",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        message: "There was an error while updating the todo!",
+      });
+    }
+  }
+);
