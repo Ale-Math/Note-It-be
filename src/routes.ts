@@ -381,7 +381,7 @@ router.get(
       });
 
       const sharedProjectData = await Project.find({
-        sharedUser: foundUser[0]._id,
+        sharedUser: foundUser[0].email,
       });
 
       res.json({
