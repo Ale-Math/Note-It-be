@@ -368,6 +368,35 @@ router.get(
   }
 );
 
+router.get(
+  "/sharedprojectdetails",
+  middleware,
+  async (req: Request, res: Response) => {
+    try {
+      const foundUser = await User.find({
+        email: req.email,
+      });
+      const projectData = await Project.find({
+        user: foundUser[0]._id,
+      });
+
+      const sharedProjectData = await Project.find({
+        sharedUser: foundUser[0]._id,
+      });
+
+      res.json({
+        projectData,
+        sharedProjectData,
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(403).json({
+        message: "User not found.",
+      });
+    }
+  }
+);
+
 router.delete(
   "/sharedtodo/:project/:todo",
   middleware,
